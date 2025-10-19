@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistik Kehadiran Jemaat GKE</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body {
+      background: #fffafc;
+      margin: 0;
+      color: #222;
+    }
+
+    /* ==== HEADER ==== */
+    header {
+      position: relative;
+      background: linear-gradient(90deg, #800000, #a30000);
+      color: white;
+      text-align: center;
+      padding: 2rem 1rem;
+      overflow: hidden;
+    }
+
+    /* Logo GKE di background */
+    header::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/1/10/Logo_Gereja_Kalimantan_Evangelis.png') no-repeat center/contain;
+      opacity: 0.12;
+      transform: translate(-50%, -50%);
+      animation: glow 5s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes glow {
+      0% { filter: drop-shadow(0 0 5px #ffcc00) drop-shadow(0 0 10px #ffcc00); }
+      100% { filter: drop-shadow(0 0 20px #ff6699) drop-shadow(0 0 35px #ffcc00); }
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      text-shadow: 0 0 10px rgba(255,255,255,0.8);
+      position: relative;
+      z-index: 1;
+    }
+
+    header p {
+      font-size: 1rem;
+      color: #ffe8e8;
+      margin-top: 0.4rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ==== MAIN ==== */
+    main {
+      padding: 1.5rem;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .form-section, .data-section {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      color: #800000;
+      border-bottom: 2px solid #ffcc00;
+      padding-bottom: 0.5rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 600;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .jumlah {
+      display: flex;
+      gap: 10px;
+    }
+
+    button {
+      background: #800000;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #a30000;
+      box-shadow: 0 0 15px #ffcc00;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #ffcc00;
+      color: #222;
+    }
+
+    tr:nth-child(even) { background: #fff8f0; }
+
+    canvas {
+      margin-top: 30px;
+      width: 100%;
+      height: 300px;
+    }
+
+    footer {
+      background: #800000;
+      color: white;
+      text-align: center;
+      padding: 0.8rem;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📊 Statistik Kehadiran Jemaat GKE</h1>
+    <p>“Berakar, Bertumbuh, dan Berbuah dalam Kristus”</p>
+  </header>
+
+  <main>
+    <section class="form-section">
+      <h2>🕊️ Form Input Kehadiran</h2>
+      <form id="attendanceForm">
+        <label>Nama Petugas Op. LCD:</label>
+        <input type="text" id="petugas" required />
+
+        <label>Tanggal Ibadah:</label>
+        <input type="date" id="tanggal" required />
+
+        <label>Nama Gereja:</label>
+        <select id="gereja" required>
+          <option value="">-- Pilih Gereja --</option>
+          <option value="Efata">Efata</option>
+          <option value="Maranatha">Maranatha</option>
+        </select>
+
+        <label>Jam Ibadah:</label>
+        <select id="jam" required>
+          <option value="">-- Pilih Jam --</option>
+        </select>
+
+        <label>Jumlah Jemaat Hadir:</label>
+        <div class="jumlah">
+          <input type="number" id="laki" placeholder="Laki-laki" min="0" required />
+          <input type="number" id="perempuan" placeholder="Perempuan" min="0" required />
+        </div>
+
+        <button type="submit">Simpan Data</button>
+      </form>
+    </section>
+
+    <section class="data-section">
+      <h2>📅 Data Kehadiran Jemaat</h2>
+      <label>Filter Tahun:</label>
+      <select id="filterTahun"></select>
+
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>Tanggal</th>
+            <th>Petugas</th>
+            <th>Gereja</th>
+            <th>Jam</th>
+            <th>Laki-laki</th>
+            <th>Perempuan</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <canvas id="chart"></canvas>
+    </section>
+  </main>
+
+  <footer>
+    <p>© Gereja Kalimantan Evangelis — Pelayanan Data Jemaat</p>
+  </footer>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxePBtJgVAPJ1XZes3Cp2ezGHKgWgvFiLpxD7_MlMAP5ngvA3AP3a6fVgvF8b1GWSMd/exec";
+
+    // === Dropdown jam dinamis ===
+    document.getElementById("gereja").addEventListener("change", function() {
+      const jamSelect = document.getElementById("jam");
+      jamSelect.innerHTML = "";
+      if (this.value === "Efata") {
+        jamSelect.innerHTML = `
+          <option value="06.00 WIB">06.00 WIB</option>
+          <option value="17.00 WIB">17.00 WIB</option>`;
+      } else if (this.value === "Maranatha") {
+        jamSelect.innerHTML = `<option value="08.00 WIB">08.00 WIB</option>`;
+      }
+    });
+
+    // === Dropdown Tahun otomatis ===
+    const tahunSelect = document.getElementById("filterTahun");
+    const tahunSekarang = new Date().getFullYear();
+    for (let t = 2023; t <= tahunSekarang + 1; t++) {
+      const opt = document.createElement("option");
+      opt.value = t;
+      opt.textContent = t;
+      if (t === tahunSekarang) opt.selected = true;
+      tahunSelect.appendChild(opt);
+    }
+
+    // === Kirim data ke Apps Script ===
+    document.getElementById("attendanceForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const data = {
+        petugas: document.getElementById("petugas").value,
+        tanggal: document.getElementById("tanggal").value,
+        gereja: document.getElementById("gereja").value,
+        jam: document.getElementById("jam").value,
+        laki: document.getElementById("laki").value,
+        perempuan: document.getElementById("perempuan").value
+      };
+
+      const formData = new URLSearchParams(data);
+      fetch(SCRIPT_URL, { method: "POST", body: formData })
+        .then(() => {
+          alert("✅ Data berhasil disimpan!");
+          document.getElementById("attendanceForm").reset();
+          loadData();
+        })
+        .catch(err => alert("❌ Gagal menyimpan data: " + err));
+    });
+
+    // === Ambil data dan tampilkan ===
+    async function loadData() {
+      const res = await fetch(SCRIPT_URL + "?action=get");
+      const rows = await res.json();
+      const tbody = document.querySelector("#dataTable tbody");
+      tbody.innerHTML = "";
+
+      const tahunDipilih = document.getElementById("filterTahun").value;
+      const filtered = rows.filter(r => r.tanggal.startsWith(tahunDipilih));
+
+      let chartData = {};
+
+      filtered.forEach(r => {
+        const total = Number(r.laki) + Number(r.perempuan);
+        const tr = `<tr>
+          <td>${r.tanggal}</td>
+          <td>${r.petugas}</td>
+          <td>${r.gereja}</td>
+          <td>${r.jam}</td>
+          <td>${r.laki}</td>
+          <td>${r.perempuan}</td>
+          <td><b>${total}</b></td>
+        </tr>`;
+        tbody.insertAdjacentHTML("beforeend", tr);
+
+        if (!chartData[r.tanggal]) chartData[r.tanggal] = 0;
+        chartData[r.tanggal] += total;
+      });
+
+      renderChart(chartData);
+    }
+
+    document.getElementById("filterTahun").addEventListener("change", loadData);
+
+    // === Grafik batang ===
+    let chartInstance;
+    function renderChart(data) {
+      const ctx = document.getElementById("chart").getContext("2d");
+      if (chartInstance) chartInstance.destroy();
+      chartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: Object.keys(data),
+          datasets: [{
+            label: "Jumlah Jemaat",
+            data: Object.values(data),
+            backgroundColor: [
+              "#800000","#ffcc00","#009900","#663399","#ff6699","#000000"
+            ],
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    }
+
+    loadData();
+  </script>
+</body>
+</html>
