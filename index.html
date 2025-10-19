@@ -3,82 +3,102 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Statistik Kehadiran Jemaat GKE</title>
+  <title>Statistik Kehadiran Jemaat pada Ibadah HAri Minggu</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
     body {
-      background: #fffafc;
       margin: 0;
       color: #222;
+      background: linear-gradient(120deg, #fff5f5, #f5fff7, #fdf6ff);
+      background-size: 400% 400%;
+      animation: bgShift 20s ease infinite;
     }
 
-    /* ==== HEADER ==== */
+    @keyframes bgShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     header {
       position: relative;
-      background: linear-gradient(90deg, #800000, #a30000);
       color: white;
       text-align: center;
       padding: 2rem 1rem;
       overflow: hidden;
+      background: linear-gradient(270deg, #800000, #ffcc00, #009900, #663399, #ff6699, #000000);
+      background-size: 1000% 1000%;
+      animation: gradientFlow 30s ease infinite;
     }
 
-    /* Logo GKE di background */
-    header::before {
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Logo GKE transparan di atas */
+    header::after {
       content: "";
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 200px;
-      height: 200px;
-      background: url('https://upload.wikimedia.org/wikipedia/commons/1/10/Logo_Gereja_Kalimantan_Evangelis.png') no-repeat center/contain;
-      opacity: 0.12;
+      width: 180px;
+      height: 180px;
+      background: url('https://upload.wikimedia.org/wikipedia/commons/2/2e/LOGO_GKE.png') no-repeat center/contain;
+      opacity: 0.1;
       transform: translate(-50%, -50%);
-      animation: glow 5s ease-in-out infinite alternate;
-      pointer-events: none;
+      animation: pulseGlow 8s ease-in-out infinite alternate;
     }
 
-    @keyframes glow {
-      0% { filter: drop-shadow(0 0 5px #ffcc00) drop-shadow(0 0 10px #ffcc00); }
-      100% { filter: drop-shadow(0 0 20px #ff6699) drop-shadow(0 0 35px #ffcc00); }
+    @keyframes pulseGlow {
+      0% { filter: drop-shadow(0 0 6px rgba(255,255,255,0.6)); }
+      100% { filter: drop-shadow(0 0 30px rgba(255,255,255,1)); }
     }
 
     header h1 {
       margin: 0;
       font-size: 2rem;
-      text-shadow: 0 0 10px rgba(255,255,255,0.8);
+      text-shadow: 0 0 10px rgba(255,255,255,0.9);
       position: relative;
-      z-index: 1;
+      z-index: 2;
     }
 
     header p {
       font-size: 1rem;
-      color: #ffe8e8;
+      color: #fff;
       margin-top: 0.4rem;
       position: relative;
-      z-index: 1;
+      z-index: 2;
+      text-shadow: 0 0 6px rgba(0,0,0,0.4);
     }
 
-    /* ==== MAIN ==== */
     main {
       padding: 1.5rem;
-      max-width: 900px;
+      max-width: 950px;
       margin: auto;
     }
 
     .form-section, .data-section {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      background: rgba(255,255,255,0.9);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
       padding: 1.5rem;
       margin-bottom: 2rem;
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s ease;
+    }
+    .form-section:hover, .data-section:hover {
+      transform: translateY(-3px);
     }
 
     h2 {
       color: #800000;
-      border-bottom: 2px solid #ffcc00;
+      border-bottom: 3px solid #ffcc00;
       padding-bottom: 0.5rem;
+      font-weight: 600;
     }
 
     label {
@@ -89,10 +109,17 @@
 
     input, select {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin-top: 5px;
-      border-radius: 6px;
+      border-radius: 8px;
       border: 1px solid #ccc;
+      transition: 0.2s;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #800000;
+      box-shadow: 0 0 5px #80000055;
     }
 
     .jumlah {
@@ -101,7 +128,7 @@
     }
 
     button {
-      background: #800000;
+      background: linear-gradient(90deg, #009900, #ffcc00, #800000);
       color: white;
       border: none;
       padding: 10px 20px;
@@ -110,11 +137,19 @@
       cursor: pointer;
       font-weight: 600;
       transition: 0.3s;
+      background-size: 200% 200%;
+      animation: btnGradient 8s ease infinite;
+    }
+
+    @keyframes btnGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     button:hover {
-      background: #a30000;
-      box-shadow: 0 0 15px #ffcc00;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px #ffcc00;
     }
 
     table {
@@ -122,6 +157,8 @@
       border-collapse: collapse;
       margin-top: 15px;
       font-size: 0.95rem;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     th, td {
@@ -140,15 +177,29 @@
     canvas {
       margin-top: 30px;
       width: 100%;
-      height: 300px;
+      height: 350px;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     footer {
-      background: #800000;
+      background: linear-gradient(90deg, #009900, #663399, #ff6699, #800000);
+      background-size: 600% 600%;
+      animation: footerAnim 20s ease infinite;
       color: white;
       text-align: center;
       padding: 0.8rem;
       font-size: 0.85rem;
+    }
+
+    @keyframes footerAnim {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
   </style>
 </head>
@@ -221,7 +272,6 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxePBtJgVAPJ1XZes3Cp2ezGHKgWgvFiLpxD7_MlMAP5ngvA3AP3a6fVgvF8b1GWSMd/exec";
 
-    // === Dropdown jam dinamis ===
     document.getElementById("gereja").addEventListener("change", function() {
       const jamSelect = document.getElementById("jam");
       jamSelect.innerHTML = "";
@@ -234,7 +284,6 @@
       }
     });
 
-    // === Dropdown Tahun otomatis ===
     const tahunSelect = document.getElementById("filterTahun");
     const tahunSekarang = new Date().getFullYear();
     for (let t = 2023; t <= tahunSekarang + 1; t++) {
@@ -245,7 +294,6 @@
       tahunSelect.appendChild(opt);
     }
 
-    // === Kirim data ke Apps Script ===
     document.getElementById("attendanceForm").addEventListener("submit", e => {
       e.preventDefault();
       const data = {
@@ -267,7 +315,6 @@
         .catch(err => alert("❌ Gagal menyimpan data: " + err));
     });
 
-    // === Ambil data dan tampilkan ===
     async function loadData() {
       const res = await fetch(SCRIPT_URL + "?action=get");
       const rows = await res.json();
@@ -276,8 +323,6 @@
 
       const tahunDipilih = document.getElementById("filterTahun").value;
       const filtered = rows.filter(r => r.tanggal.startsWith(tahunDipilih));
-
-      let chartData = {};
 
       filtered.forEach(r => {
         const total = Number(r.laki) + Number(r.perempuan);
@@ -291,40 +336,57 @@
           <td><b>${total}</b></td>
         </tr>`;
         tbody.insertAdjacentHTML("beforeend", tr);
-
-        if (!chartData[r.tanggal]) chartData[r.tanggal] = 0;
-        chartData[r.tanggal] += total;
       });
 
-      renderChart(chartData);
+      renderChart(filtered);
     }
 
-    document.getElementById("filterTahun").addEventListener("change", loadData);
-
-    // === Grafik batang ===
     let chartInstance;
-    function renderChart(data) {
+    function renderChart(rows) {
       const ctx = document.getElementById("chart").getContext("2d");
       if (chartInstance) chartInstance.destroy();
+
+      const tanggalUnik = [...new Set(rows.map(r => r.tanggal))].sort();
+
+      const datasetEfataPagi = [];
+      const datasetEfataSore = [];
+      const datasetMaranatha = [];
+
+      tanggalUnik.forEach(tgl => {
+        const efataPagi = rows.find(r => r.tanggal === tgl && r.gereja === "Efata" && r.jam === "06.00 WIB");
+        const efataSore = rows.find(r => r.tanggal === tgl && r.gereja === "Efata" && r.jam === "17.00 WIB");
+        const maranatha = rows.find(r => r.tanggal === tgl && r.gereja === "Maranatha" && r.jam === "08.00 WIB");
+
+        datasetEfataPagi.push(efataPagi ? efataPagi.total : 0);
+        datasetEfataSore.push(efataSore ? efataSore.total : 0);
+        datasetMaranatha.push(maranatha ? maranatha.total : 0);
+      });
+
       chartInstance = new Chart(ctx, {
         type: "bar",
         data: {
-          labels: Object.keys(data),
-          datasets: [{
-            label: "Jumlah Jemaat",
-            data: Object.values(data),
-            backgroundColor: [
-              "#800000","#ffcc00","#009900","#663399","#ff6699","#000000"
-            ],
-          }]
+          labels: tanggalUnik,
+          datasets: [
+            { label: "Efata 06.00 WIB", data: datasetEfataPagi, backgroundColor: "#1E3A8A" },
+            { label: "Efata 17.00 WIB", data: datasetEfataSore, backgroundColor: "#60A5FA" },
+            { label: "Maranatha 08.00 WIB", data: datasetMaranatha, backgroundColor: "#10B981" }
+          ]
         },
         options: {
           responsive: true,
-          scales: { y: { beginAtZero: true } }
+          plugins: {
+            legend: { position: 'top', labels: { font: { size: 14 } } },
+            title: { display: true, text: 'Statistik Jemaat per Sesi Ibadah', font: { size: 18 } }
+          },
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: "Jumlah Jemaat" } },
+            x: { title: { display: true, text: "Tanggal Ibadah" } }
+          }
         }
       });
     }
 
+    document.getElementById("filterTahun").addEventListener("change", loadData);
     loadData();
   </script>
 </body>
