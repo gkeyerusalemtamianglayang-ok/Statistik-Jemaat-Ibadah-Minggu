@@ -15,7 +15,6 @@
       background-size: 400% 400%;
       animation: bgShift 20s ease infinite;
     }
-
     @keyframes bgShift {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
@@ -32,14 +31,12 @@
       background-size: 1000% 1000%;
       animation: gradientFlow 30s ease infinite;
     }
-
     @keyframes gradientFlow {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
 
-    /* Logo GKE transparan di atas */
     header::after {
       content: "";
       position: absolute;
@@ -52,7 +49,6 @@
       transform: translate(-50%, -50%);
       animation: pulseGlow 8s ease-in-out infinite alternate;
     }
-
     @keyframes pulseGlow {
       0% { filter: drop-shadow(0 0 6px rgba(255,255,255,0.6)); }
       100% { filter: drop-shadow(0 0 30px rgba(255,255,255,1)); }
@@ -65,7 +61,6 @@
       position: relative;
       z-index: 2;
     }
-
     header p {
       font-size: 1rem;
       color: #fff;
@@ -90,9 +85,7 @@
       backdrop-filter: blur(8px);
       transition: transform 0.3s ease;
     }
-    .form-section:hover, .data-section:hover {
-      transform: translateY(-3px);
-    }
+    .form-section:hover, .data-section:hover { transform: translateY(-3px); }
 
     h2 {
       color: #800000;
@@ -101,11 +94,7 @@
       font-weight: 600;
     }
 
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: 600;
-    }
+    label { display: block; margin-top: 10px; font-weight: 600; }
 
     input, select {
       width: 100%;
@@ -115,17 +104,13 @@
       border: 1px solid #ccc;
       transition: 0.2s;
     }
-
     input:focus, select:focus {
       outline: none;
       border-color: #800000;
       box-shadow: 0 0 5px #80000055;
     }
 
-    .jumlah {
-      display: flex;
-      gap: 10px;
-    }
+    .jumlah { display: flex; gap: 10px; }
 
     button {
       background: linear-gradient(90deg, #009900, #ffcc00, #800000);
@@ -140,47 +125,45 @@
       background-size: 200% 200%;
       animation: btnGradient 8s ease infinite;
     }
-
     @keyframes btnGradient {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
+    button:hover { transform: scale(1.05); box-shadow: 0 0 10px #ffcc00; }
 
-    button:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 10px #ffcc00;
+    /* === Responsive table === */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 10px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 15px;
       font-size: 0.95rem;
-      border-radius: 8px;
-      overflow: hidden;
+      min-width: 700px;
     }
-
     th, td {
       border: 1px solid #ddd;
       padding: 8px;
       text-align: center;
     }
-
-    th {
-      background: #ffcc00;
-      color: #222;
-    }
-
+    th { background: #ffcc00; color: #222; }
     tr:nth-child(even) { background: #fff8f0; }
 
+    /* === Responsive chart === */
     canvas {
       margin-top: 30px;
-      width: 100%;
-      height: 350px;
+      width: 100% !important;
+      height: auto !important;
+      min-height: 250px;
+      max-height: 450px;
       animation: fadeIn 1s ease;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -195,18 +178,29 @@
       padding: 0.8rem;
       font-size: 0.85rem;
     }
-
     @keyframes footerAnim {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
+    }
+
+    /* === Mobile tweaks === */
+    @media (max-width: 768px) {
+      main { padding: 1rem; }
+      header h1 { font-size: 1.5rem; }
+      header p { font-size: 0.9rem; }
+      h2 { font-size: 1.1rem; }
+      input, select, button { font-size: 0.9rem; }
+      .jumlah { flex-direction: column; gap: 6px; }
+      th, td { font-size: 0.85rem; padding: 6px; }
+      button { width: 100%; }
     }
   </style>
 </head>
 <body>
   <header>
     <h1>📊 Kehadiran Ibadah Hari Minggu</h1>
-    <p>Jemaat GKE YErusalem Tamiang Layang</p>
+    <p>Jemaat GKE Yerusalem Tamiang Layang</p>
   </header>
 
   <main>
@@ -246,20 +240,22 @@
       <label>Filter Tahun:</label>
       <select id="filterTahun"></select>
 
-      <table id="dataTable">
-        <thead>
-          <tr>
-            <th>Tanggal</th>
-            <th>Petugas</th>
-            <th>Gereja</th>
-            <th>Jam</th>
-            <th>Laki-laki</th>
-            <th>Perempuan</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="table-container">
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Petugas</th>
+              <th>Gereja</th>
+              <th>Jam</th>
+              <th>Laki-laki</th>
+              <th>Perempuan</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
       <canvas id="chart"></canvas>
     </section>
@@ -304,14 +300,9 @@
         laki: document.getElementById("laki").value,
         perempuan: document.getElementById("perempuan").value
       };
-
       const formData = new URLSearchParams(data);
       fetch(SCRIPT_URL, { method: "POST", body: formData })
-        .then(() => {
-          alert("✅ Data berhasil disimpan!");
-          document.getElementById("attendanceForm").reset();
-          loadData();
-        })
+        .then(() => { alert("✅ Data berhasil disimpan!"); document.getElementById("attendanceForm").reset(); loadData(); })
         .catch(err => alert("❌ Gagal menyimpan data: " + err));
     });
 
@@ -320,10 +311,8 @@
       const rows = await res.json();
       const tbody = document.querySelector("#dataTable tbody");
       tbody.innerHTML = "";
-
       const tahunDipilih = document.getElementById("filterTahun").value;
       const filtered = rows.filter(r => r.tanggal.startsWith(tahunDipilih));
-
       filtered.forEach(r => {
         const total = Number(r.laki) + Number(r.perempuan);
         const tr = `<tr>
@@ -337,7 +326,6 @@
         </tr>`;
         tbody.insertAdjacentHTML("beforeend", tr);
       });
-
       renderChart(filtered);
     }
 
@@ -345,23 +333,16 @@
     function renderChart(rows) {
       const ctx = document.getElementById("chart").getContext("2d");
       if (chartInstance) chartInstance.destroy();
-
       const tanggalUnik = [...new Set(rows.map(r => r.tanggal))].sort();
-
-      const datasetEfataPagi = [];
-      const datasetEfataSore = [];
-      const datasetMaranatha = [];
-
+      const datasetEfataPagi = [], datasetEfataSore = [], datasetMaranatha = [];
       tanggalUnik.forEach(tgl => {
         const efataPagi = rows.find(r => r.tanggal === tgl && r.gereja === "Efata" && r.jam === "06.00 WIB");
         const efataSore = rows.find(r => r.tanggal === tgl && r.gereja === "Efata" && r.jam === "17.00 WIB");
         const maranatha = rows.find(r => r.tanggal === tgl && r.gereja === "Maranatha" && r.jam === "08.00 WIB");
-
         datasetEfataPagi.push(efataPagi ? efataPagi.total : 0);
         datasetEfataSore.push(efataSore ? efataSore.total : 0);
         datasetMaranatha.push(maranatha ? maranatha.total : 0);
       });
-
       chartInstance = new Chart(ctx, {
         type: "bar",
         data: {
@@ -374,13 +355,14 @@
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
           plugins: {
-            legend: { position: 'top', labels: { font: { size: 14 } } },
-            title: { display: true, text: 'Statistik Jemaat per Sesi Ibadah', font: { size: 18 } }
+            legend: { position: 'top', labels: { font: { size: 13 }, color: '#111' } },
+            title: { display: true, text: 'Statistik Jemaat per Sesi Ibadah', font: { size: 16 }, color: '#111' }
           },
           scales: {
-            y: { beginAtZero: true, title: { display: true, text: "Jumlah Jemaat" } },
-            x: { title: { display: true, text: "Tanggal Ibadah" } }
+            y: { beginAtZero: true, title: { display: true, text: "Jumlah Jemaat" }, ticks: { color: '#333' } },
+            x: { title: { display: true, text: "Tanggal Ibadah" }, ticks: { color: '#333' } }
           }
         }
       });
