@@ -268,6 +268,14 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxePBtJgVAPJ1XZes3Cp2ezGHKgWgvFiLpxD7_MlMAP5ngvA3AP3a6fVgvF8b1GWSMd/exec";
 
+    // 🔸 Format tanggal menjadi gaya Indonesia
+    function formatTanggal(isoDate) {
+      if (!isoDate) return "";
+      const date = new Date(isoDate);
+      if (isNaN(date)) return isoDate;
+      return date.toLocaleDateString("id-ID", { day: "2-digit", month: "long", year: "numeric" });
+    }
+
     document.getElementById("gereja").addEventListener("change", function() {
       const jamSelect = document.getElementById("jam");
       jamSelect.innerHTML = "";
@@ -316,7 +324,7 @@
       filtered.forEach(r => {
         const total = Number(r.laki) + Number(r.perempuan);
         const tr = `<tr>
-          <td>${r.tanggal}</td>
+          <td>${formatTanggal(r.tanggal)}</td>
           <td>${r.petugas}</td>
           <td>${r.gereja}</td>
           <td>${r.jam}</td>
@@ -333,12 +341,12 @@
     function renderChart(rows) {
       const ctx = document.getElementById("chart").getContext("2d");
       if (chartInstance) chartInstance.destroy();
-      const tanggalUnik = [...new Set(rows.map(r => r.tanggal))].sort();
+      const tanggalUnik = [...new Set(rows.map(r => formatTanggal(r.tanggal)))];
       const datasetEfataPagi = [], datasetEfataSore = [], datasetMaranatha = [];
       tanggalUnik.forEach(tgl => {
-        const efataPagi = rows.find(r => r.tanggal === tgl && r.gereja === "Efata" && r.jam === "06.00 WIB");
-        const efataSore = rows.find(r => r.tanggal === tgl && r.gereja === "Efata" && r.jam === "17.00 WIB");
-        const maranatha = rows.find(r => r.tanggal === tgl && r.gereja === "Maranatha" && r.jam === "08.00 WIB");
+        const efataPagi = rows.find(r => formatTanggal(r.tanggal) === tgl && r.gereja === "Efata" && r.jam === "06.00 WIB");
+        const efataSore = rows.find(r => formatTanggal(r.tanggal) === tgl && r.gereja === "Efata" && r.jam === "17.00 WIB");
+        const maranatha = rows.find(r => formatTanggal(r.tanggal) === tgl && r.gereja === "Maranatha" && r.jam === "08.00 WIB");
         datasetEfataPagi.push(efataPagi ? efataPagi.total : 0);
         datasetEfataSore.push(efataSore ? efataSore.total : 0);
         datasetMaranatha.push(maranatha ? maranatha.total : 0);
